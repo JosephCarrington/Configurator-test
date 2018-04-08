@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sketchfab Viewer API example</title>
+
+    <!-- Insert this script -->
+    <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.1.0.js"></script>
+</head>
+
+<body>
+    <!-- Insert an empty iframe -->
+    <iframe width="100%" height="600" src="" id="api-frame" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+    <!-- Initialize the viewer -->
+    <script type="text/javascript">
+    var iframe = document.getElementById( 'api-frame' );
+    var urlid = 'f4d5d74420c548c48ba4753ccb08e970';
+
+    // By default, the latest version of the viewer API will be used.
+    var client = new Sketchfab( iframe );
+
+    // Alternatively, you can request a specific version.
+    // var client = new Sketchfab( '1.0.0', iframe );
+
+    client.init( urlid, {
+        success: function onSuccess( api ){
+            api.start();
+            api.addEventListener( 'viewerready', function() {
+
+                // API is ready to use
+                // Insert your code here
+                api.getNodeMap(function(err, nodes) {
+                  console.log(nodes);
+
+                });
+                $('input').on('change', function(e) {
+                  var show = e.target.checked;
+                  var objId = $(e.target).data('obj-id');
+                  if(show) {
+                    api.show(objId);
+                  }
+                  else {
+                    api.hide(objId);
+                  }
+                });
+            } );
+        },
+        error: function onError() {
+            console.log( 'Viewer error' );
+        }
+    } );
+    </script>
+    <label for="obj_0">Toggle First Object</label>
+    <input type="checkbox" name="obj_0" checked="checked" data-obj-id="458">
+    <label for="obj_0">Toggle Second Object</label>
+    <input type="checkbox" name="obj_1" checked="checked" data-obj-id="459">
+    <label for="obj_0">Toggle Third Object</label>
+    <input type="checkbox" name="obj_2" checked="checked" data-obj-id="460">
+</body>
+</html>
