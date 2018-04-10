@@ -11,7 +11,7 @@
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        border: 2px solid black;
+        border: 2px solid grey;
         cursor: pointer;
         float: left;
         margin-left: 1em;
@@ -22,14 +22,7 @@
       }
 
       .selector.red {
-        border-color: rgb(174, 54, 58);
-      }
-      .selector.red {
         background: rgb(174, 54, 58);
-      }
-
-      .selector.green {
-        border-color: rgb(59, 113, 68);
       }
       .selector.green {
         background: rgb(59, 113, 68);
@@ -40,7 +33,7 @@
       }
 
       .selector.active {
-        border-color: grey;
+        border-color: white;
       }
       #tools {
         position: absolute;
@@ -67,7 +60,8 @@
         width: 100%;
         font-family: myriad, sans-serif;
         font-weight: bold;
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid white;
+        color: white;
         width: 100%;
         height: 20px;
       }
@@ -102,7 +96,7 @@
     <script type="text/javascript">
     window.api;
     var iframe = document.getElementById( 'api-frame' );
-    var urlid = 'b2f1e419b2ee402e87fa5d186cbab7c4';
+    var urlid = '453bb56a6427413cb38e791f7dd90789';
 
     // By default, the latest version of the viewer API will be used.
     var client = new Sketchfab( iframe );
