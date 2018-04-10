@@ -8,11 +8,10 @@
     <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.1.0.js"></script>
     <style>
       .selector {
-        width: 40px;
-        height: 40px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
-        border: 4px solid black;
-        padding: 10px;
+        border: 2px solid black;
         cursor: pointer;
         float: left;
         margin-left: 1em;
@@ -48,7 +47,7 @@
         top: 40px;
         right: 0;
         width: 300px;
-        height: 300px;
+        height: 150px;
         z-index: 999;
         text-align: right;
         display: flex;
@@ -81,9 +80,9 @@
     <div id="tools">
       <div class="tool-container">
         <div class="tool-header">Choose a color</div>
-        <div data-toggle="on" class="selector red active" data-obj-id="458"></div>
-        <div data-toggle="off" class="selector green" data-obj-id="459"></div>
-        <div data-toggle="off" class="selector black" data-obj-id="460"></div>
+        <div data-toggle="on" class="selector red active" data-obj-id="545"></div>
+        <div data-toggle="off" class="selector green" data-obj-id="539"></div>
+        <div data-toggle="off" class="selector black" data-obj-id="546"></div>
       </div><!-- .tool-container -->
       <div class="tool-container">
         <div class="tool-header">Choose lighting</div>
@@ -95,13 +94,15 @@
     <iframe style="display: block; position: absolute; width: 100%; height: 100%; left: 0; top: 0; border: 0;" width="640" height="480" id="api-frame" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
     <script
+
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
     <!-- Initialize the viewer -->
     <script type="text/javascript">
+    window.api;
     var iframe = document.getElementById( 'api-frame' );
-    var urlid = 'f4d5d74420c548c48ba4753ccb08e970';
+    var urlid = 'b2f1e419b2ee402e87fa5d186cbab7c4';
 
     // By default, the latest version of the viewer API will be used.
     var client = new Sketchfab( iframe );
@@ -113,22 +114,28 @@
         success: function onSuccess( api ){
             api.start();
             api.addEventListener( 'viewerready', function() {
+              window.api = api;
+              api.getNodeMap((err, nodes) => {
+                console.log(nodes);
+              });
 
-                // API is ready to use
-                // Insert your code here
-                // 458, 459, 460
-                api.hide(459);
-                api.hide(460);
-                api.getNodeMap(function(err, nodes) {
 
-                });
-                $('.selector').on('click', function(e) {
-                  $('.selector').removeClass('active');
-                  $(e.target).addClass('active');
-                  hideAll(api);
-                  api.show($(e.target).data('obj-id'));
-                });
-            } );
+              // API is ready to use
+              // Insert your code here
+              // 458, 459, 460
+              api.hide(539);
+              // api.hide(540);
+              api.hide(546);
+              api.getNodeMap(function(err, nodes) {
+
+              });
+              $('.selector').on('click', function(e) {
+                $('.selector').removeClass('active');
+                $(e.target).addClass('active');
+                hideAll(api);
+                api.show($(e.target).data('obj-id'));
+              });
+          } );
         },
         error: function onError() {
             console.log( 'Viewer error' );
@@ -136,9 +143,10 @@
     } );
 
     function hideAll(api) {
-      api.hide(458);
-      api.hide(459);
-      api.hide(460);
+      api.hide(539);
+      // api.hide(540);
+      api.hide(545);
+      api.hide(546);
     }
     </script>
     <!-- <label for="obj_0">Toggle First Object</label>
