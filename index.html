@@ -8,27 +8,30 @@
     <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.1.0.js"></script>
     <style>
       .selector {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         border: 2px solid grey;
         cursor: pointer;
-        float: left;
-        margin-left: 1em;
+        margin: auto;
+        box-sizing: border-box;
       }
 
-      .active .inner-inner-circle {
-        display: block;
+      .inner-circle {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        margin: 1.5px;
+        pointer-events: none;
       }
-
-      .selector.red {
+      .selector.red .inner-circle {
         background: rgb(174, 54, 58);
       }
-      .selector.green {
+      .selector.green .inner-circle {
         background: rgb(59, 113, 68);
       }
 
-      .selector.black {
+      .selector.black .inner-circle {
         background: black;
       }
 
@@ -36,19 +39,23 @@
         border-color: white;
       }
 
-      .selector.dark {
+      .selector.dark .inner-circle {
         background: #333;
       }
 
-      .selector.light {
-        background: #ddd;
+      .selector.light .inner-circle {
+        background: rgb(246, 239, 128);
+      }
+
+      .selector.single .inner-circle,
+      .selector.double .inner-circle {
+        background: rgb(174, 54, 58);
       }
       #tools {
         position: absolute;
-        top: 40px;
+        bottom: 20px;
         right: 0;
-        width: 300px;
-        height: 150px;
+        width: 200px;
         z-index: 999;
         text-align: right;
         display: flex;
@@ -62,16 +69,28 @@
         flex-wrap: wrap;
         justify-content: flex-end;
         width: 100%;
+        margin-bottom: 1em;
       }
 
       .tool-header {
         width: 100%;
         font-family: myriad, sans-serif;
-        font-weight: bold;
-        border-bottom: 1px solid white;
+        font-size: 40px;
+        border-bottom: 2px solid white;
         color: white;
         width: 100%;
-        height: 20px;
+        margin-right: 0.25em;
+      }
+
+      .toggle-container {
+        text-align: center;
+        width: 33%;
+      }
+
+      p {
+        font-family: myriad, sans-serif;
+        color: white;
+        margin-bottom: 3px;
       }
 
 
@@ -81,15 +100,55 @@
 <body>
     <div id="tools">
       <div class="tool-container">
-        <div class="tool-header">Choose a color</div>
-        <div data-toggle="on" class="selector red active color-selector" data-obj-id="545"></div>
-        <div data-toggle="off" class="selector green color-selector" data-obj-id="539"></div>
-        <div data-toggle="off" class="selector black color-selector" data-obj-id="546"></div>
+        <div class="tool-header">Color</div>
+        <div class="toggle-container">
+          <p>red</p>
+          <div data-toggle="on" class="selector red active color-selector" data-obj-id="539">
+            <div class="inner-circle"></div>
+          </div>
+        </div>
+        <div class="toggle-container">
+          <p>green</p>
+          <div data-toggle="off" class="selector green color-selector" data-obj-id="545">
+            <div class="inner-circle"></div>
+          </div>
+        </div>
+        <div class="toggle-container">
+          <p>black</p>
+          <div data-toggle="off" class="selector black color-selector" data-obj-id="546">
+            <div class="inner-circle"></div>
+          </div>
+        </div>
       </div><!-- .tool-container -->
       <div class="tool-container">
-        <div class="tool-header">Choose lighting</div>
-        <a href="?lighting=light"><div class="selector lighting light"></div></a>
-        <a href="?lighting=dark"><div class="selector lighting dark"></div></a>
+        <div class="tool-header">Light</div>
+        <div class="toggle-container">
+          <p>on</p>
+          <a href=""><div class="selector lighting light">
+            <div class="inner-circle"></div>
+          </div></a>
+        </div>
+        <div class="toggle-container">
+          <p>off</p>
+          <a href=""><div class="selector lighting dark">
+            <div class="inner-circle"></div>
+          </div></a>
+        </div>
+      </div><!-- .tool-container -->
+      <div class="tool-container">
+        <div class="tool-header">Style</div>
+        <div class="toggle-container">
+          <p>single</p>
+          <a href=""><div class="selector style single">
+            <div class="inner-circle"></div>
+          </div></a>
+        </div>
+        <div class="toggle-container">
+          <p>double</p>
+          <a href=""><div class="selector style double">
+            <div class="inner-circle"></div>
+          </div></a>
+        </div>
       </div><!-- .tool-container -->
     </div>
     <!-- Insert an empty iframe -->
@@ -102,11 +161,35 @@
   crossorigin="anonymous"></script>
     <!-- Initialize the viewer -->
     <script type="text/javascript">
+    var redId, greenId, blackId;
+
+    function getUrl(newParam, newValue) {
+      var url = new URL(window.location.href);
+      var lighting = url.searchParams.get("lighting") ? url.searchParams.get('lighting') : 'light';
+      var style = url.searchParams.get('style') ? url.searchParams.get('style') : 'single';
+      if(newParam == 'lighting') {
+        lighting = newValue;
+      }
+      if(newParam == 'style') {
+        style = newValue;
+      }
+
+      return ('?lighting=' + lighting + '&style=' + style);
+
+    }
     var url = new URL(window.location.href);
     var lighting = url.searchParams.get("lighting");
+    var style = url.searchParams.get("style");
     window.api;
     var iframe = document.getElementById( 'api-frame' );
-    var urlid = lighting == 'dark' ? '453bb56a6427413cb38e791f7dd90789' : 'b2f1e419b2ee402e87fa5d186cbab7c4';
+
+    var urlid = '';
+    if(lighting == 'light') {
+      urlid = style == 'single' ? 'b2f1e419b2ee402e87fa5d186cbab7c4' : '9357fd89b14c4a0aa295662c3bbd6d20';
+    }
+    else {
+      urlid = style == 'single' ? '453bb56a6427413cb38e791f7dd90789' : '3b8f5cb6999b4b8e94e5b973cf42b46b';
+    }
     jQuery('document').ready(function($) {
       if(lighting == 'dark') {
         $('.selector.dark').addClass('active');
@@ -114,6 +197,66 @@
       else {
         $('.selector.light').addClass('active');
       }
+      if(style == 'single') {
+        $('.selector.single').addClass('active');
+      }
+      else {
+        $('.selector.double').addClass('active');
+      }
+
+      $('a').each(function(i, a) {
+        var $inner = $(a).find('div');
+        if($inner.hasClass('light')) {
+          $(a).attr('href', getUrl('lighting',  'light'));
+        }
+        else if($inner.hasClass('dark')) {
+          $(a).attr('href', getUrl('lighting',  'dark'));
+        }
+        else if($inner.hasClass('single')) {
+          $(a).attr('href', getUrl('style',  'single'));
+        }
+        else if($inner.hasClass('double')) {
+          $(a).attr('href', getUrl('style',  'double'));
+        }
+      });
+
+      if(lighting == 'light') {
+        if(style == 'single') {
+          redId = 539;
+          greenId = 545;
+          blackId = 546;
+        }
+        else {
+          redId = 534;
+          greenId = 540;
+          blackId = 541;
+        }
+      }
+      else {
+        if(style == 'single') {
+          redId = 545;
+          greenId = 539;
+          blackId = 546;
+        }
+        else {
+          redId = 539;
+          greenId = 545;
+          blackId = 546;
+        }
+      }
+
+
+      $('.color-selector').each(function(i, cs) {
+        if($(cs).hasClass('red')) {
+          $(cs).data('obj-id', redId);
+        }
+        else if($(cs).hasClass('green')) {
+          $(cs).data('obj-id', greenId);
+        }
+        else {
+          $(cs).data('obj-id', blackId);
+        }
+      });
     });
 
     // By default, the latest version of the viewer API will be used.
@@ -135,14 +278,14 @@
               // API is ready to use
               // Insert your code here
               // 458, 459, 460
-              api.hide(539);
-              // api.hide(540);
-              api.hide(546);
+              // api.hide(539);
+              // api.hide(greenId);
+              // api.hide(blackId);
               api.getNodeMap(function(err, nodes) {
 
               });
-              $('.selector').on('click', function(e) {
-                $('.selector').not('.lighting').removeClass('active');
+              $('.color-selector').on('click', function(e) {
+                $('.selector').not('.lighting').not('.style').removeClass('active');
                 $(e.target).addClass('active');
                 hideAll(api);
                 api.show($(e.target).data('obj-id'));
@@ -155,10 +298,10 @@
     } );
 
     function hideAll(api) {
-      api.hide(539);
+      api.hide(redId);
       // api.hide(540);
-      api.hide(545);
-      api.hide(546);
+      api.hide(greenId);
+      api.hide(blackId);
     }
     </script>
     <!-- <label for="obj_0">Toggle First Object</label>
