@@ -49,7 +49,14 @@
 
       .selector.single .inner-circle,
       .selector.double .inner-circle {
-        background: rgb(174, 54, 58);
+        background: white;
+        overflow: hidden;
+      }
+
+      .inner-circle-half {
+        width: 50%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
       }
       #tools {
         position: absolute;
@@ -146,7 +153,9 @@
         <div class="toggle-container">
           <p>double</p>
           <a href=""><div class="selector style double">
-            <div class="inner-circle"></div>
+            <div class="inner-circle">
+              <div class="inner-circle-half"></div>
+            </div>
           </div></a>
         </div>
       </div><!-- .tool-container -->
