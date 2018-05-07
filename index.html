@@ -6,6 +6,7 @@
 
     <!-- Insert this script -->
     <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.1.0.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.12/js/all.js" integrity="sha384-Voup2lBiiyZYkRto2XWqbzxHXwzcm4A5RfdfG6466bu5LqjwwrjXCMBQBLMWh7qR" crossorigin="anonymous"></script>
     <style>
       .selector {
         width: 30px;
@@ -100,6 +101,13 @@
         margin-bottom: 3px;
       }
 
+      .inner-circle svg {
+        fill: black;
+        color: black;
+        margin-top: 2px;
+        padding: 1px;
+      }
+
 
     </style>
 </head>
@@ -147,15 +155,13 @@
         <div class="toggle-container">
           <p>single</p>
           <a href=""><div class="selector style single">
-            <div class="inner-circle"></div>
+            <div class="inner-circle"><i class="fas fa-angle-left"></i></div>
           </div></a>
         </div>
         <div class="toggle-container">
           <p>double</p>
           <a href=""><div class="selector style double">
-            <div class="inner-circle">
-              <div class="inner-circle-half"></div>
-            </div>
+            <div class="inner-circle"><i class="fas fa-angle-left"></i><i class="fas fa-angle-right"></i></div>
           </div></a>
         </div>
       </div><!-- .tool-container -->
@@ -164,14 +170,15 @@
     <iframe style="display: block; position: absolute; width: 100%; height: 100%; left: 0; top: 0; border: 0;" width="640" height="480" id="api-frame" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
     <script
-
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
     <!-- Initialize the viewer -->
     <script type="text/javascript">
+    // Set up some vars to hold the ids that we must hardcode
     var redId, greenId, blackId;
 
+    // A function to get and set parameters from the URL
     function getUrl(newParam, newValue) {
       var url = new URL(window.location.href);
       var lighting = url.searchParams.get("lighting") ? url.searchParams.get('lighting') : 'light';
@@ -189,17 +196,19 @@
     var url = new URL(window.location.href);
     var lighting = url.searchParams.get("lighting");
     var style = url.searchParams.get("style");
-    window.api;
     var iframe = document.getElementById( 'api-frame' );
 
     var urlid = '';
+    // Depending on the URL parameters passed, we get one of 4 different sketchfab scenes
     if(lighting == 'light') {
       urlid = style == 'single' ? 'b2f1e419b2ee402e87fa5d186cbab7c4' : '9357fd89b14c4a0aa295662c3bbd6d20';
     }
     else {
       urlid = style == 'single' ? '453bb56a6427413cb38e791f7dd90789' : '3b8f5cb6999b4b8e94e5b973cf42b46b';
     }
+    // UI Click Handlers
     jQuery('document').ready(function($) {
+      // Control active state for CSS rules
       if(lighting == 'dark') {
         $('.selector.dark').addClass('active');
       }
@@ -213,6 +222,7 @@
         $('.selector.double').addClass('active');
       }
 
+      // Modify the URL
       $('a').each(function(i, a) {
         var $inner = $(a).find('div');
         if($inner.hasClass('light')) {
@@ -229,6 +239,7 @@
         }
       });
 
+      // Hardcoded ID's which can be seen inside the sketchfab file js data
       if(lighting == 'light') {
         if(style == 'single') {
           redId = 539;
@@ -254,7 +265,7 @@
         }
       }
 
-
+      // Add data-obj-id to the selectors based on their class
       $('.color-selector').each(function(i, cs) {
         if($(cs).hasClass('red')) {
           $(cs).data('obj-id', redId);
@@ -278,7 +289,7 @@
         success: function onSuccess( api ){
             api.start();
             api.addEventListener( 'viewerready', function() {
-              window.api = api;
+              // Console log the nodes, so that a dev can see the id's
               api.getNodeMap((err, nodes) => {
                 console.log(nodes);
               });
@@ -286,13 +297,11 @@
 
               // API is ready to use
               // Insert your code here
-              // 458, 459, 460
-              // api.hide(539);
+              // Hide all but the red model
               api.hide(greenId);
               api.hide(blackId);
-              api.getNodeMap(function(err, nodes) {
 
-              });
+              // Click handler for the selectors that choose the color
               $('.color-selector').on('click', function(e) {
                 $('.selector').not('.lighting').not('.style').removeClass('active');
                 $(e.target).addClass('active');
@@ -308,16 +317,9 @@
 
     function hideAll(api) {
       api.hide(redId);
-      // api.hide(540);
       api.hide(greenId);
       api.hide(blackId);
     }
     </script>
-    <!-- <label for="obj_0">Toggle First Object</label>
-    <input type="checkbox" name="obj_0" checked="checked" data-obj-id="458">
-    <label for="obj_1">Toggle Second Object</label>
-    <input type="checkbox" name="obj_1" data-obj-id="459">
-    <label for="obj_2">Toggle Third Object</label>
-    <input type="checkbox" name="obj_2" data-obj-id="460"> -->
 </body>
 </html>
