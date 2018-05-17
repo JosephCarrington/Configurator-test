@@ -176,6 +176,7 @@
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
       crossorigin="anonymous"></script>
     <!-- Initialize the viewer -->
+
     <script type="text/javascript">
     // Set up some vars to hold the ids that we must hardcode
     var redId, greenId, blackId;
@@ -292,8 +293,10 @@
             api.start();
             api.addEventListener( 'viewerready', function() {
               // Console log the nodes, so that a dev can see the id's
-              api.getNodeMap((err, nodes) => {
-                console.log(nodes);
+              api.getNodeMap( function (err, nodes) {
+                if( !err ) {
+                  console.log(nodes);
+                }
               });
 
 
